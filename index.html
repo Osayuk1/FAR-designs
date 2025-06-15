@@ -1,86 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Wallet App Auth</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: auto; }
-    h2 { text-align: center; }
-    form { margin-bottom: 20px; }
-    input, button {
-      width: 100%; padding: 10px; margin: 5px 0;
-      box-sizing: border-box;
-    }
-    #tokenBox { word-wrap: break-word; font-size: 14px; background: #f0f0f0; padding: 10px; }
-  </style>
+  <title>Supabase Auth Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
+  <h2>Signup</h2>
+  <input type="email" id="signup-email" placeholder="Email">
+  <input type="password" id="signup-password" placeholder="Password">
+  <button onclick="signup()">Sign Up</button>
 
-  <h2>Wallet Auth</h2>
+  <h2>Login</h2>
+  <input type="email" id="login-email" placeholder="Email">
+  <input type="password" id="login-password" placeholder="Password">
+  <button onclick="login()">Log In</button>
 
-  <h3>Sign Up</h3>
-  <form id="signupForm">
-    <input type="text" id="signupName" placeholder="Name" required />
-    <input type="email" id="signupEmail" placeholder="Email" required />
-    <input type="password" id="signupPassword" placeholder="Password" required />
-    <button type="submit">Sign Up</button>
-  </form>
-
-  <h3>Login</h3>
-  <form id="loginForm">
-    <input type="email" id="loginEmail" placeholder="Email" required />
-    <input type="password" id="loginPassword" placeholder="Password" required />
-    <button type="submit">Login</button>
-  </form>
-
-  <h3>Token</h3>
-  <div id="tokenBox">Not logged in</div>
+  <h3 id="status"></h3>
 
   <script>
-    const signupForm = document.getElementById("signupForm");
-    const loginForm = document.getElementById("loginForm");
-    const tokenBox = document.getElementById("tokenBox");
+    const SUPABASE_URL = 'https://ocjgfzsbqnzdmlvlzylk.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jamdmenNicW56ZG1sdmx6eWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMjQyOTgsImV4cCI6MjA2NTYwMDI5OH0.B2skPDhjcB08c5gPVttZ7xAlgO5_QH9TOnsJct0GiI0'
 
-    signupForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("signupName").value;
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-      const res = await fetch("https://x8ki-letl-twmt.n7.xano.io/api:VkniHWwe/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
-      });
+    async function signup() {
+      const email = document.getElementById('signup-email').value
+      const password = document.getElementById('signup-password').value
+      const { data, error } = await supabase.auth.signUp({ email, password })
+      document.getElementById('status').innerText = error ? error.message : 'Signup successful! Check your email'
+    }
 
-      const data = await res.json();
-      if (res.ok) {
-        tokenBox.innerText = `Signed up!\nToken:\n${data.authToken}`;
-        localStorage.setItem("token", data.authToken);
+    async function login() {
+      const email = document.getElementById('login-email').value
+      const password = document.getElementById('login-password').value
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        document.getElementById('status').innerText = error.message
       } else {
-        tokenBox.innerText = "Signup failed: " + (data.message || JSON.stringify(data));
+        const { user } = data
+        document.getElementById('status').innerText = 'Login successful! User ID: ' + user.id
       }
-    });
-
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-
-      const res = await fetch("https://x8ki-letl-twmt.n7.xano.io/api:VkniHWwe/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        tokenBox.innerText = `Logged in!\nToken:\n${data.authToken}`;
-        localStorage.setItem("token", data.authToken);
-      } else {
-        tokenBox.innerText = "Login failed: " + (data.message || JSON.stringify(data));
-      }
-    });
+    }
   </script>
 </body>
 </html>
