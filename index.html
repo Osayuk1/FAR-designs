@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Supabase Auth Demo</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <title>Xano Auth Test</title>
 </head>
 <body>
   <h2>Signup</h2>
-  <input type="email" id="signup-email" placeholder="Email" />
-  <input type="password" id="signup-password" placeholder="Password" />
-  <button onclick="signup()">Sign Up</button>
+  <form id="signupForm">
+    <input type="text" id="signup_name" placeholder="Name" required><br>
+    <input type="email" id="signup_email" placeholder="Email" required><br>
+    <input type="password" id="signup_password" placeholder="Password" required><br>
+    <button type="submit">Sign Up</button>
+  </form>
+  <p id="signupResult"></p>
 
   <h2>Login</h2>
-  <input type="email" id="login-email" placeholder="Email" />
-  <input type="password" id="login-password" placeholder="Password" />
-  <button onclick="login()">Log In</button>
-
-  <h3 id="status"></h3>
+  <form id="loginForm">
+    <input type="email" id="login_email" placeholder="Email" required><br>
+    <input type="password" id="login_password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+  </form>
+  <p id="loginResult"></p>
 
   <script>
-    const SUPABASE_URL = 'https://ocjgfzsbqnzdmlvlzylk.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jamdmenNicW56ZG1sdmx6eWxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMjQyOTgsImV4cCI6MjA2NTYwMDI5OH0.B2skPDhjcB08c5gPVttZ7xAlgO5_QH9TOnsJct0GiI0'
+    const signupURL = "https://x8ki-letl-twmt.n7.xano.io/api:VkniHWwe/auth/signup";
+    const loginURL = "https://x8ki-letl-twmt.n7.xano.io/api:VkniHWwe/auth/login";
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    document.getElementById("signupForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("signup_name").value;
+      const email = document.getElementById("signup_email").value;
+      const password = document.getElementById("signup_password").value;
 
-    async function signup() {
-      const email = document.getElementById('signup-email').value
-      const password = document.getElementById('signup-password').value
+      const res = await fetch(signupURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      });
 
-      const { data, error } = await supabase.auth.signUp({ email, password })
+      const data = await res.json();
+      document.getElementById("signupResult").innerText = JSON.stringify(data);
+    };
 
-      if (error) {
-        document.getElementById('status').innerText = 'Signup failed: ' + error.message
-        console.error(error)
-      } else {
-        document.getElementById('status').innerText = 'Signup successful! Check your email.'
-        console.log(data)
-      }
-    }
+    document.getElementById("loginForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login_email").value;
+      const password = document.getElementById("login_password").value;
 
-    async function login() {
-      const email = document.getElementById('login-email').value
-      const password = document.getElementById('login-password').value
+      const res = await fetch(loginURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-
-      if (error) {
-        document.getElementById('status').innerText = 'Login failed: ' + error.message
-        console.error(error)
-      } else {
-        document.getElementById('status').innerText = 'Login successful! User ID: ' + data.user.id
-        console.log(data)
-      }
-    }
+      const data = await res.json();
+      document.getElementById("loginResult").innerText = JSON.stringify(data);
+    };
   </script>
 </body>
-</html>
+</html> 
