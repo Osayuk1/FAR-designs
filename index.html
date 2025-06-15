@@ -1,24 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Embedded Site</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet App Auth</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      overflow: hidden;
+    body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: auto; }
+    h2 { text-align: center; }
+    form { margin-bottom: 20px; }
+    input, button {
+      width: 100%; padding: 10px; margin: 5px 0;
+      box-sizing: border-box;
     }
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-      display: block;
-    }
+    #tokenBox { word-wrap: break-word; font-size: 14px; background: #f0f0f0; padding: 10px; }
   </style>
 </head>
 <body>
-  <iframe src="https://far-designs-bold-fashion-for-bold-people--osayuki.on.websim.com/"></iframe>
+
+  <h2>Wallet Auth</h2>
+
+  <h3>Sign Up</h3>
+  <form id="signupForm">
+    <input type="text" id="signupName" placeholder="Name" required />
+    <input type="email" id="signupEmail" placeholder="Email" required />
+    <input type="password" id="signupPassword" placeholder="Password" required />
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <h3>Login</h3>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required />
+    <input type="password" id="loginPassword" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
+
+  <h3>Token</h3>
+  <div id="tokenBox">Not logged in</div>
+
+  <script>
+    const signupForm = document.getElementById("signupForm");
+    const loginForm = document.getElementById("loginForm");
+    const tokenBox = document.getElementById("tokenBox");
+
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      const res = await fetch("https://x8ki-letl-twmt.n7.xano.io/api:VkniHWwe/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        tokenBox.innerText = `Signed up!\nToken:\n${data.authToken}`;
+        localStorage.setItem("token", data.authToken);
+      } else {
+        tokenBox.innerText = "Signup failed: " + (data.message || JSON.stringify(data));
+      }
+    });
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const res = await fetch("https://x8ki-letl-twmt.n7.xano.io/api:VkniHWwe/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        tokenBox.innerText = `Logged in!\nToken:\n${data.authToken}`;
+        localStorage.setItem("token", data.authToken);
+      } else {
+        tokenBox.innerText = "Login failed: " + (data.message || JSON.stringify(data));
+      }
+    });
+  </script>
 </body>
 </html>
