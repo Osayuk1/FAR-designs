@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Email OTP Login</title>
+  <title>Login or Signup</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
-  <h2>Email OTP Login</h2>
+  <h2>Email Login or Signup</h2>
 
   <input type="email" id="email" placeholder="Enter your email" />
-  <button onclick="sendOTP()">Send OTP</button>
+  <button onclick="sendOTP()">Continue</button>
 
   <p id="status"></p>
 
@@ -20,6 +20,7 @@
     async function sendOTP() {
       const email = document.getElementById("email").value.trim();
       const status = document.getElementById("status");
+
       if (!email) {
         status.textContent = "Please enter a valid email.";
         return;
@@ -34,7 +35,7 @@
       if (error) {
         status.textContent = "Error: " + error.message;
       } else {
-        status.textContent = "OTP sent! Check your inbox.";
+        status.textContent = "Check your email for the login/signup link!";
       }
     }
   </script>
