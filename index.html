@@ -1,60 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Xano Auth Test</title>
+  <title>OTP Login</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
-  <h2>Signup</h2>
-  <form id="signupForm">
-    <input type="text" id="signup_name" placeholder="Name" required><br>
-    <input type="email" id="signup_email" placeholder="Email" required><br>
-    <input type="password" id="signup_password" placeholder="Password" required><br>
-    <button type="submit">Sign Up</button>
-  </form>
-  <p id="signupResult"></p>
-
-  <h2>Login</h2>
-  <form id="loginForm">
-    <input type="email" id="login_email" placeholder="Email" required><br>
-    <input type="password" id="login_password" placeholder="Password" required><br>
-    <button type="submit">Login</button>
-  </form>
-  <p id="loginResult"></p>
+  <h2>Email OTP Login</h2>
+  <input type="email" id="email" placeholder="Enter your email" />
+  <button onclick="sendOTP()">Send OTP</button>
 
   <script>
-    const signupURL = "https://x8ki-letl-twmt.n7.xano.io/api:rUOeuFAh/auth/signup";
-    const loginURL = "https://x8ki-letl-twmt.n7.xano.io/api:rUOeuFAh/auth/login";
+    const supabaseUrl = "https://vilvueqeveogkpxyzxiw.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpbHZ1ZXFldmVvZ2tweHl6eGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNjY0NjAsImV4cCI6MjA2NTY0MjQ2MH0.2nWmRIA8szsS4wvpczw6dTLW8ydDerajptkIzNJwOEo";
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    document.getElementById("signupForm").onsubmit = async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("signup_name").value;
-      const email = document.getElementById("signup_email").value;
-      const password = document.getElementById("signup_password").value;
-
-      const res = await fetch(signupURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
-      });
-
-      const data = await res.json();
-      document.getElementById("signupResult").innerText = JSON.stringify(data);
-    };
-
-    document.getElementById("loginForm").onsubmit = async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("login_email").value;
-      const password = document.getElementById("login_password").value;
-
-      const res = await fetch(loginURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-      document.getElementById("loginResult").innerText = JSON.stringify(data);
-    };
+    async function sendOTP() {
+      const email = document.getElementById("email").value;
+      const { error } = await supabase.auth.signInWithOtp({ email });
+      if (error) {
+        alert("Error: " + error.message);
+      } else {
+        alert("OTP sent! Check your email.");
+      }
+    }
   </script>
 </body>
-</html> 
+</html>
