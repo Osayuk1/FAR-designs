@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>OTP Login</title>
+  <title>Email OTP Login</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
   <h2>Email OTP Login</h2>
+
   <input type="email" id="email" placeholder="Enter your email" />
   <button onclick="sendOTP()">Send OTP</button>
+
+  <p id="status"></p>
 
   <script>
     const supabaseUrl = "https://vilvueqeveogkpxyzxiw.supabase.co";
@@ -15,12 +18,23 @@
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
     async function sendOTP() {
-      const email = document.getElementById("email").value;
-      const { error } = await supabase.auth.signInWithOtp({ email });
+      const email = document.getElementById("email").value.trim();
+      const status = document.getElementById("status");
+      if (!email) {
+        status.textContent = "Please enter a valid email.";
+        return;
+      }
+
+      status.textContent = "Sending OTP...";
+      const { data, error } = await supabase.auth.signInWithOtp({ email });
+
+      console.log("data:", data);
+      console.log("error:", error);
+
       if (error) {
-        alert("Error: " + error.message);
+        status.textContent = "Error: " + error.message;
       } else {
-        alert("OTP sent! Check your email.");
+        status.textContent = "OTP sent! Check your inbox.";
       }
     }
   </script>
